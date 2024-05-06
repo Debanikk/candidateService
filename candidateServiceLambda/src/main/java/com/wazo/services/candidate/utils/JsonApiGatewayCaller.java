@@ -10,6 +10,7 @@ import com.amazonaws.http.JsonErrorResponseHandler;
 import com.amazonaws.http.JsonResponseHandler;
 import com.amazonaws.internal.AmazonWebServiceRequestAdapter;
 import com.amazonaws.internal.auth.DefaultSignerProvider;
+import com.amazonaws.protocol.json.JsonErrorResponseMetadata;
 import com.amazonaws.protocol.json.JsonOperationMetadata;
 import com.amazonaws.protocol.json.SdkStructuredPlainJsonFactory;
 import com.amazonaws.transform.JsonErrorUnmarshaller;
@@ -26,11 +27,11 @@ import java.util.Collections;
 public class JsonApiGatewayCaller extends AmazonWebServiceClient {
 
     private static final String API_GATEWAY_SERVICE_NAME = "";
-    private final AWSStaticCredentialsProvider credentials;
-    private final String apiKey;
-    private final AWS4Signer signer;
-    private final JsonErrorResponseHandler errorResponseHandler;
-    private final JsonResponseHandler<ApiGatewayResponse> responseHandler;
+    private AWSStaticCredentialsProvider credentials;
+    private String apiKey;
+    private AWS4Signer signer;
+    private JsonErrorResponseHandler errorResponseHandler;
+    private JsonResponseHandler<ApiGatewayResponse> responseHandler;
 
     public JsonApiGatewayCaller(String accessKey, String secretAccessKey, String apiKey, String region, URI endpoint) {
         super(new ClientConfiguration());
@@ -53,8 +54,8 @@ public class JsonApiGatewayCaller extends AmazonWebServiceClient {
                 }
         };
 
-        this.errorResponseHandler = SdkStructuredPlainJsonFactory.SDK_JSON_FACTORY.createErrorResponseHandler(
-                Collections.singletonList(defaultErrorUnmarshaller), null);
+        this.errorResponseHandler = SdkStructuredPlainJsonFactory.SDK_JSON_FACTORY.createErrorResponseHandler(new JsonErrorResponseMetadata(),
+                Collections.singletonList(defaultErrorUnmarshaller));
     }
 
     private ExecutionContext createExecutionContext() {

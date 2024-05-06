@@ -1,6 +1,7 @@
 package com.wazo.services.candidate.model.response;
 
-import com.wazo.services.candidate.model.request.*;
+import com.wazo.models.candidate.*;
+import com.wazo.services.candidate.dao.entity.ContactEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +21,7 @@ public class CandidateResponse {
     private String dateOfBirth;
     private String gender;
     private String nationality;
-    private List<Contact> contactList;
+    private List<ContactEntity> contactList;
     private Boolean isPresentSameAsPermanentAddress;
     private List<Address> addressList;
     private ProfessionalExperience professionalExperience;

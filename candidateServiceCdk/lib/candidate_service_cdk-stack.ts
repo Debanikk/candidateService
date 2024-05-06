@@ -51,16 +51,27 @@ export class candidateServiceCdkStack extends cdk.Stack {
     const orgIdResource = orgResource.addResource('{orgId}');
     // Add the candidate resource with orgIdResource
     const candidateResource = orgIdResource.addResource('candidate');
-
-    candidateResource.addMethod('POST', integration);
-    candidateResource.addMethod('GET', integration);
+        candidateResource.addMethod('POST', integration);
+        candidateResource.addMethod('GET', integration);
     // Add the {candidateId} resource along with candidateResource
     const candidateIdResource = candidateResource.addResource('{candidateId}');
-    candidateIdResource.addMethod('GET', integration);
-    candidateIdResource.addMethod('PUT', integration);
-    candidateIdResource.addMethod('DELETE', integration);
-    // Add the details resource along with candidateIdResource
+        candidateIdResource.addMethod('GET', integration);
+        //candidateIdResource.addMethod('PUT', integration);
+        candidateIdResource.addMethod('DELETE', integration);
+    // Add the details resource with candidateIdResource
     const candidateDetailsResource = candidateIdResource.addResource('details');
-    candidateDetailsResource.addMethod('GET', integration);
+        candidateDetailsResource.addMethod('GET', integration);
+        candidateDetailsResource.addMethod('PUT', integration);
+    const candidatePortfolioResource = candidateIdResource.addResource('documents');
+        candidatePortfolioResource.addMethod('PUT', integration);
+    const candidateDocumentsResource = candidateIdResource.addResource('address');
+        candidateDocumentsResource.addMethod('PUT', integration);
+    const candidateContactResource = candidateIdResource.addResource('contact');
+        candidateContactResource.addMethod('PUT', integration);
+    const candidateCommentsResource = candidateIdResource.addResource('comment');
+        candidateCommentsResource.addMethod('PUT', integration);
+    const candidateStatusResource = candidateIdResource.addResource('status');
+        candidateStatusResource.addMethod('PUT', integration);
+
   }
 }

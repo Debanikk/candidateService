@@ -1,7 +1,7 @@
 package com.wazo.services.candidate.dao.converter;
 
+import com.wazo.models.candidate.*;
 import com.wazo.services.candidate.dao.entity.CandidateEntity;
-import com.wazo.services.candidate.model.request.*;
 import software.amazon.awssdk.enhanced.dynamodb.AttributeConverter;
 import software.amazon.awssdk.enhanced.dynamodb.AttributeValueType;
 import software.amazon.awssdk.enhanced.dynamodb.EnhancedType;

@@ -1,11 +1,11 @@
 package com.wazo.services.candidate.dagger;
 
+import com.wazo.services.candidate.ConfigurationServiceClient.impl.ConfigurationRestClientImpl;
 import com.wazo.services.candidate.activity.*;
 import com.wazo.services.candidate.clients.DynamoDb;
 import com.wazo.services.candidate.dao.CandidateDao;
 import com.wazo.services.candidate.dao.impl.CandidateDaoImpl;
-import com.wazo.services.candidate.validation.ValidateCreateCandidateRequest;
-import com.wazo.services.candidate.validation.ValidateUpdateCandidateRequest;
+import com.wazo.services.candidate.validation.*;
 import dagger.Module;
 import dagger.Provides;
 
@@ -21,11 +21,16 @@ public class AppModule {
         return new DynamoDb();
     }
 
+    @Provides
+    @Singleton
+    public ConfigurationRestClientImpl provideConfigurationRestClientImpl() {
+        return new ConfigurationRestClientImpl();
+    }
 
     @Provides
     @Singleton
-    public CandidateDao provideCandidateDao(DynamoDb dynamoDb) {
-        return new CandidateDaoImpl(dynamoDb);
+    public CandidateDao provideCandidateDao(DynamoDb dynamoDb, ConfigurationRestClientImpl configurationRestClient) {
+        return new CandidateDaoImpl(dynamoDb, configurationRestClient);
     }
 
     @Provides
@@ -36,8 +41,38 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public ValidateUpdateCandidateRequest provideValidateUpdateCandidateRequest() {
-        return new ValidateUpdateCandidateRequest();
+    public ValidateUpdateCandidateDetailsRequest provideValidateUpdateCandidateDetailsRequest() {
+        return new ValidateUpdateCandidateDetailsRequest();
+    }
+
+    @Provides
+    @Singleton
+    public ValidateUpdateCandidateAddressRequest provideValidateUpdateCandidateAddressRequest() {
+        return new ValidateUpdateCandidateAddressRequest();
+    }
+
+    @Provides
+    @Singleton
+    public ValidateUpdateCandidateCommentRequest provideValidateUpdateCandidateCommentRequest() {
+        return new ValidateUpdateCandidateCommentRequest();
+    }
+
+    @Provides
+    @Singleton
+    public ValidateUpdateCandidateContactRequest provideValidateUpdateCandidateContactRequest() {
+        return new ValidateUpdateCandidateContactRequest();
+    }
+
+    @Provides
+    @Singleton
+    public ValidateUpdateCandidateDocumentRequest provideValidateUpdateCandidateDocumentRequest() {
+        return new ValidateUpdateCandidateDocumentRequest();
+    }
+
+    @Provides
+    @Singleton
+    public ValidateUpdateCandidateUnderProcessRequest provideValidateUpdateCandidateUnderProcessRequest() {
+        return new ValidateUpdateCandidateUnderProcessRequest();
     }
 
     @Provides
@@ -60,14 +95,39 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public GetCandidateByIdActivity provideGetByIdcandidateActivity(CandidateDao candidateDao) {
+    public GetCandidateByIdActivity provideGetByIdCandidateActivity(CandidateDao candidateDao) {
         return new GetCandidateByIdActivity(candidateDao);
     }
 
     @Provides
     @Singleton
-    public UpdateCandidateActivity provideUpdateCandidateActivity(CandidateDao candidateDao, ValidateUpdateCandidateRequest validateUpdatecandidateRequest) {
-        return new UpdateCandidateActivity(candidateDao, validateUpdatecandidateRequest);
+    public UpdateCandidateAddressActivity provideUpdateCandidateAddressActivity(CandidateDao candidateDao, ValidateUpdateCandidateAddressRequest validateUpdateCandidateAddressRequest) {
+        return new UpdateCandidateAddressActivity(candidateDao, validateUpdateCandidateAddressRequest);
+    }
+    @Provides
+    @Singleton
+    public UpdateCandidateCommentActivity provideUpdateCandidateCommentActivity(CandidateDao candidateDao, ValidateUpdateCandidateCommentRequest validateUpdateCandidateCommentRequest) {
+        return new UpdateCandidateCommentActivity(candidateDao, validateUpdateCandidateCommentRequest);
+    }
+    @Provides
+    @Singleton
+    public UpdateCandidateUnderProcessActivity provideUpdateCandidateUnderProcessActivity(CandidateDao candidateDao, ValidateUpdateCandidateUnderProcessRequest validateUpdateCandidateUnderProcessRequest) {
+        return new UpdateCandidateUnderProcessActivity(candidateDao, validateUpdateCandidateUnderProcessRequest);
+    }
+    @Provides
+    @Singleton
+    public UpdateCandidateDocumentActivity provideUpdateCandidateDocumentActivity(CandidateDao candidateDao, ValidateUpdateCandidateDocumentRequest validateUpdateCandidateDocumentRequest) {
+        return new UpdateCandidateDocumentActivity(candidateDao, validateUpdateCandidateDocumentRequest);
+    }
+    @Provides
+    @Singleton
+    public UpdateCandidateContactActivity provideUpdateCandidateContactActivity(CandidateDao candidateDao, ValidateUpdateCandidateContactRequest validateUpdateCandidateContactRequest) {
+        return new UpdateCandidateContactActivity(candidateDao, validateUpdateCandidateContactRequest);
+    }
+    @Provides
+    @Singleton
+    public UpdateCandidateDetailsActivity provideUpdateCandidateDetailsActivity(CandidateDao candidateDao, ValidateUpdateCandidateDetailsRequest validateUpdateCandidateDetailsRequest) {
+        return new UpdateCandidateDetailsActivity(candidateDao, validateUpdateCandidateDetailsRequest);
     }
 
     @Provides

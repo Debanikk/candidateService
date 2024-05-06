@@ -1,1 +1,2 @@
-/Users/debanikkundu/Downloads/AwsCdkLambdaBuilder/output/candidateService/candidateServiceLambda/src/test/java/com/wazo/services/candidate/AppTest.java
+/Users/debanikkundu/wazo/git_repo/candidateService/candidateServiceLambda/src/test/java/com/wazo/services/candidate/activity/DeleteCandidateActivityTest.java
+/Users/debanikkundu/wazo/git_repo/candidateService/candidateServiceLambda/src/test/java/com/wazo/services/candidate/dao/CandidateDaoImplTest.java

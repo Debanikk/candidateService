@@ -12,10 +12,12 @@ import lombok.NoArgsConstructor;
 public class AddressEntity {
     private String locationId;
     private String locationName;
-    private String Address;
+    private String address;
     private String City;
     private String State;
     private String ZipCode;
     private String Country;
     private String AddressType;
+    private String entityId;
+    private String createdAt;
 }

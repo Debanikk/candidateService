@@ -2,15 +2,16 @@ package com.wazo.services.candidate.activity;
 
 import com.wazo.services.candidate.dao.CandidateDao;
 import com.wazo.services.candidate.model.response.ApiResponse;
+import lombok.AllArgsConstructor;
 
+import javax.inject.Inject;
+
+import static com.wazo.services.candidate.utils.Constants.DELETE_SUCCESS;
+import static com.wazo.services.candidate.utils.Constants.ERROR_MESSAGE;
+
+@AllArgsConstructor(onConstructor = @__(@Inject))
 public class DeleteCandidateActivity {
     private final CandidateDao candidateDao;
-    //private final S3Helper s3Helper;
-
-    public DeleteCandidateActivity(CandidateDao candidateDao) {
-        this.candidateDao = candidateDao;
-        //this.s3Helper = s3Helper;
-    }
 
     public ApiResponse run(String orgId, String candidateId) {
         if (orgId != null && candidateId != null) {
@@ -18,11 +19,13 @@ public class DeleteCandidateActivity {
 
             return ApiResponse.builder()
                     .status(203)
-                    .message("Data delete success!")
+                    .message(DELETE_SUCCESS)
                     .build();
         } else {
-            return ApiResponse.builder().status(200).message("Pk Sk is required!").build();
+            return ApiResponse.builder()
+                    .status(403)
+                    .message(ERROR_MESSAGE)
+                    .build();
         }
     }
-
 }

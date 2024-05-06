@@ -1,8 +1,8 @@
 
 package com.wazo.services.candidate.dao.entity;
 
+import com.wazo.models.candidate.*;
 import com.wazo.services.candidate.dao.converter.CandidateConverterProvider;
-import com.wazo.services.candidate.model.request.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -55,6 +55,7 @@ public class CandidateEntity {
     private String eeoDetails_protectedClass;
     private Boolean isUnderProcess;
     private List<CustomCandidateField> customCandidateFields;
+    private String comments;
 
     @DynamoDbPartitionKey
     public String getOrgId() {

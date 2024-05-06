@@ -21,7 +21,17 @@ public interface CandidateComponent {
 
     GetCandidateByIdActivity getCandidateByIdActivity();
 
-    UpdateCandidateActivity updatecandidateActivity();
+    UpdateCandidateDetailsActivity updateCandidateDetailsActivity();
+
+    UpdateCandidateAddressActivity updateCandidateAddressActivity();
+
+    UpdateCandidateCommentActivity updateCandidateCommentActivity();
+
+    UpdateCandidateContactActivity updateCandidateContactActivity();
+
+    UpdateCandidateDocumentActivity updateCandidateDocumentActivity();
+
+    UpdateCandidateUnderProcessActivity updateCandidateUnderProcessActivity();
 
     GetCandidateDetailsByIdActivity getCandidateDetailsByIdActivity();
 }

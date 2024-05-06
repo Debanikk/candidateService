@@ -23,12 +23,12 @@ import javax.inject.Provider;
     "KotlinInternal",
     "KotlinInternalInJava"
 })
-public final class AppModule_ProvideGetByIdcandidateActivityFactory implements Factory<GetCandidateByIdActivity> {
+public final class AppModule_ProvideGetByIdCandidateActivityFactory implements Factory<GetCandidateByIdActivity> {
   private final AppModule module;
 
   private final Provider<CandidateDao> candidateDaoProvider;
 
-  public AppModule_ProvideGetByIdcandidateActivityFactory(AppModule module,
+  public AppModule_ProvideGetByIdCandidateActivityFactory(AppModule module,
       Provider<CandidateDao> candidateDaoProvider) {
     this.module = module;
     this.candidateDaoProvider = candidateDaoProvider;
@@ -36,16 +36,16 @@ public final class AppModule_ProvideGetByIdcandidateActivityFactory implements F
 
   @Override
   public GetCandidateByIdActivity get() {
-    return provideGetByIdcandidateActivity(module, candidateDaoProvider.get());
+    return provideGetByIdCandidateActivity(module, candidateDaoProvider.get());
   }
 
-  public static AppModule_ProvideGetByIdcandidateActivityFactory create(AppModule module,
+  public static AppModule_ProvideGetByIdCandidateActivityFactory create(AppModule module,
       Provider<CandidateDao> candidateDaoProvider) {
-    return new AppModule_ProvideGetByIdcandidateActivityFactory(module, candidateDaoProvider);
+    return new AppModule_ProvideGetByIdCandidateActivityFactory(module, candidateDaoProvider);
   }
 
-  public static GetCandidateByIdActivity provideGetByIdcandidateActivity(AppModule instance,
+  public static GetCandidateByIdActivity provideGetByIdCandidateActivity(AppModule instance,
       CandidateDao candidateDao) {
-    return Preconditions.checkNotNullFromProvides(instance.provideGetByIdcandidateActivity(candidateDao));
+    return Preconditions.checkNotNullFromProvides(instance.provideGetByIdCandidateActivity(candidateDao));
   }
 }

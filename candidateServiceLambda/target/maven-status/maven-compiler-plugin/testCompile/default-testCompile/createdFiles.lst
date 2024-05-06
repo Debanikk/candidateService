@@ -1,1 +1,2 @@
-com/wazo/services/candidate/AppTest.class
+com/wazo/services/candidate/activity/DeleteCandidateActivityTest.class
+com/wazo/services/candidate/dao/CandidateDaoImplTest.class

@@ -1,6 +1,6 @@
 package com.wazo.services.candidate.validation;
 
-import com.wazo.services.candidate.model.request.CreateCandidateRequest;
+import com.wazo.models.candidate.CreateCandidateRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,15 +36,20 @@ public class ValidateCreateCandidateRequest {
             validationErrors.put("nationality", "nationality is required field!");
         }
 
-        if (createcandidateRequest.getContact() == null) {
+        /*if (createcandidateRequest.getIsPresentAddressSameAsPermanent() == null) {
+            validFlag = false;
+            validationErrors.put("IsPresentAddressSameAsPermanent", "IsPresentAddressSameAsPermanent must be selected for address provided!");
+        }*/
+
+        /*if (createcandidateRequest.getContact() == null) {
             validFlag = false;
             validationErrors.put("contact", "contact is required field!");
-        }
+        }*/
 
-        if (createcandidateRequest.getAddressList() == null) {
+        /*if (createcandidateRequest.getAddressList() == null) {
             validFlag = false;
             validationErrors.put("AddressList", "At least 1 address is required to be present!");
-        }
+        }*/
 
         if (createcandidateRequest.getProfessionalExperience() == null) {
             validFlag = false;

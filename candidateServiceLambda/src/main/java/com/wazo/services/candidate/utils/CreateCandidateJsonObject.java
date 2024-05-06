@@ -1,11 +1,117 @@
 package com.wazo.services.candidate.utils;
 
+import com.wazo.models.candidate.*;
 import com.wazo.services.candidate.dao.entity.CandidateEntity;
-import com.wazo.services.candidate.model.request.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class CreateCandidateJsonObject {
+
+    public static CreateCandidateRequest getCreateCandidateRequestObject() {
+        CreateCandidateRequest cReq = new CreateCandidateRequest();
+        cReq.setRequisitionIdList(new ArrayList<>(List.of("requisition 1", "requisition 2")));
+        cReq.setFirstName("Debanik");
+        cReq.setLastName("Kundu");
+        cReq.setDateOfBirth("30121987");
+        cReq.setGender("Male");
+        cReq.setNationality("Indian");
+        cReq.setDocuments(getDocuments());
+        cReq.setIsPresentAddressSameAsPermanent(true);
+        cReq.setProfessionalExperience(getProfExp());
+        cReq.setEducation(getEducation());
+        cReq.setContact(getContactList());
+        cReq.setSkillSet(getSkillSetDetails());
+        cReq.setIsUnderProcess(false);
+        cReq.setApplicationSource("linkedIn");
+        cReq.setProfessionalReference(getProfessionalReference());
+        cReq.setEeoDetails_discrimination("no");
+        cReq.setEeoDetails_race("Indian");
+        cReq.setEeoDetails_ethnicity("Asian");
+        cReq.setEeoDetails_gender("Male");
+        cReq.setEeoDetails_age("37");
+        cReq.setEeoDetails_disabilities("None");
+        cReq.setEeoDetails_militaryExperience("None");
+        cReq.setEeoDetails_religion("Hindu");
+        cReq.setEeoDetails_maritalStatus("Married");
+        cReq.setEeoDetails_sexualOrientation("Straight");
+        cReq.setEeoDetails_protectedClass("No");
+        cReq.setCustomCandidateFields(getCustomCandidateFields());
+        cReq.setAddressList(getAddressList());
+        cReq.setCandidateNoticePeriod("30 days");
+        cReq.setCandidateInterviewAvailability("04452024 - Datetime converted to string");
+        cReq.setSocialMediaProfile(getSocialMediaList());
+        cReq.setPortfolio(getPortFolioList());
+        cReq.setComments("Candidate is ready for interview");
+
+        return cReq;
+    }
+
+    private static List<String> getDocuments() {
+        List<String> docList = new ArrayList<>();
+        docList.add("Doc_1");
+
+        return docList;
+    }
+
+    private static List<PortFolio> getPortFolioList() {
+        List<PortFolio> pfList = new ArrayList<>();
+
+        PortFolio pf1 = new PortFolio();
+        pf1.setPortfolioLink("pf URL 1");
+        pf1.setPortFolioDescription("desc 1");
+        pfList.add(pf1);
+
+        PortFolio pf2 = new PortFolio();
+        pf2.setPortfolioLink("pf URL 2");
+        pf2.setPortFolioDescription("desc 2");
+        pfList.add(pf2);
+
+        return pfList;
+    }
+
+    private static List<SocialMedia> getSocialMediaList() {
+        List<SocialMedia> smList = new ArrayList<>();
+
+        SocialMedia sm1 = new SocialMedia();
+        sm1.setSocialMediaName("FACEBOOK");
+        sm1.setLink("facebook URL");
+        smList.add(sm1);
+
+        SocialMedia sm2 = new SocialMedia();
+        sm2.setSocialMediaName("INSTAGRAM");
+        sm2.setLink("instagram URL");
+        smList.add(sm2);
+
+        return smList;
+    }
+
+    private static List<Address> getAddressList() {
+        List<Address> addrList = new ArrayList<>();
+        Address addr1 = Address.builder()
+                .addressLine1("apt no 1")
+                .addressLine2("street name 1")
+                .addressType("PRESENT")
+                .city("city 1")
+                .state("TX")
+                .zipCode("75038")
+                .country("USA")
+                .build();
+
+        addrList.add(addr1);
+
+        Address addr2 = Address.builder()
+                .addressLine1("apt no 41")
+                .addressLine2("street name 2")
+                .addressType("PERMANENT")
+                .city("Kolkata")
+                .state("West Bengal")
+                .zipCode("700003")
+                .country("INDIA")
+                .build();
+
+        addrList.add(addr2);
+
+        return addrList;
+    }
 
     public static CandidateEntity getCandidateEntityObject() {
         CandidateEntity can = new CandidateEntity();
@@ -184,5 +290,43 @@ public class CreateCandidateJsonObject {
         professionalExperience.setCertificates(certificateList);
 
         return professionalExperience;
+    }
+
+    private static List<Contact> getContactList(){
+        List<Contact> contacts = new ArrayList<>();
+
+        Contact con1 = Contact.builder()
+                .system("Mobile")
+                .value("9876543210")
+                .rank(1)
+                .build();
+
+        contacts.add(con1);
+
+        Contact con2 = Contact.builder()
+                .system("email")
+                .value("debanik@wazoworld.com")
+                .rank(2)
+                .build();
+
+        contacts.add(con2);
+
+        Contact con3 = Contact.builder()
+                .system("whatsapp")
+                .value("9158314321")
+                .rank(3)
+                .build();
+
+        contacts.add(con3);
+
+        Contact con4 = Contact.builder()
+                .system("alternate number")
+                .value("8017014027")
+                .rank(4)
+                .build();
+
+        contacts.add(con4);
+
+        return contacts;
     }
 }

@@ -8,8 +8,7 @@ import lombok.AllArgsConstructor;
 
 import javax.inject.Inject;
 
-import static com.wazo.services.candidate.utils.Constants.GENERIC_CANDIDATE_ERROR_MESSAGE;
-import static com.wazo.services.candidate.utils.Constants.GET_CANDIDATE_BY_ID_SUCCESS;
+import static com.wazo.services.candidate.utils.Constants.*;
 
 @AllArgsConstructor(onConstructor = @__(@Inject))
 public class GetCandidateDetailsByIdActivity {
@@ -29,7 +28,7 @@ public class GetCandidateDetailsByIdActivity {
             e.printStackTrace();
             return ApiResponse.builder()
                     .status(400)
-                    .message(GENERIC_CANDIDATE_ERROR_MESSAGE)
+                    .message(ERROR_MESSAGE)
                     .build();
         }
     }

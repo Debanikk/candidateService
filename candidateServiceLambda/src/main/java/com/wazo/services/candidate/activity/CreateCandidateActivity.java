@@ -1,38 +1,36 @@
 package com.wazo.services.candidate.activity;
 
-import com.amazonaws.http.HttpMethodName;
 import com.google.gson.Gson;
+import com.wazo.models.candidate.Address;
+import com.wazo.models.candidate.Contact;
+import com.wazo.models.candidate.CreateCandidateRequest;
 import com.wazo.services.candidate.Exceptions.type.AddressUploadException;
 import com.wazo.services.candidate.Exceptions.type.ContactUploadException;
 import com.wazo.services.candidate.dao.CandidateDao;
-import com.wazo.services.candidate.dao.entity.*;
-import com.wazo.services.candidate.model.request.Address;
-import com.wazo.services.candidate.model.request.Contact;
-import com.wazo.services.candidate.model.response.ApiGatewayResponse;
+import com.wazo.services.candidate.dao.entity.CandidateEntity;
+import com.wazo.services.candidate.handler.CandidateLambdaMainHandler;
 import com.wazo.services.candidate.model.response.ApiResponse;
-import com.wazo.services.candidate.model.request.CreateCandidateRequest;
-import com.wazo.services.candidate.utils.JsonApiGatewayCaller;
 import com.wazo.services.candidate.validation.ValidateCreateCandidateRequest;
 import lombok.AllArgsConstructor;
-import software.amazon.awssdk.utils.StringUtils;
+import org.apache.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.io.ByteArrayInputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import static com.wazo.services.candidate.Exceptions.type.ErrorCode.ADDRESS_NOT_SAVED;
-import static com.wazo.services.candidate.Exceptions.type.ErrorCode.CONTACT_NOT_SAVED;
+import static com.wazo.services.candidate.Exceptions.type.ErrorCode.CONTACT_NOT_CREATED;
 import static com.wazo.services.candidate.utils.Constants.*;
 
 @AllArgsConstructor(onConstructor = @__(@Inject))
 public class CreateCandidateActivity {
+    private static final Gson gson = new Gson();
     private final CandidateDao candidateDao;
     private final ValidateCreateCandidateRequest validateCreateCandidateRequest;
-
-    private static final Gson gson = new Gson();
+    private static final Logger log = LoggerFactory.getLogger(CandidateLambdaMainHandler.class);
 
     public ApiResponse run(String orgId, String requestBody) {
         CreateCandidateRequest createcandidateRequest = gson.fromJson(requestBody, CreateCandidateRequest.class);
@@ -41,7 +39,6 @@ public class CreateCandidateActivity {
 
                 String partitionKey = orgId;
                 String sortKey = UUID.randomUUID().toString();
-
 
                 CandidateEntity candidateEntity = CandidateEntity.builder()
                         .orgId(partitionKey)
@@ -53,11 +50,9 @@ public class CreateCandidateActivity {
                         .dateOfBirth(createcandidateRequest.getDateOfBirth())
                         .gender(createcandidateRequest.getGender())
                         .nationality(createcandidateRequest.getNationality())
-                        .contactList(processContact(createcandidateRequest.getContact()))
-                        .isPresentSameAsPermanentAddress(createcandidateRequest.getIsPresentAddressSameAsPermanent())
-                        .addressList(ProcessCandidateAddress(createcandidateRequest.getAddressList(),
-                                createcandidateRequest.getIsPresentAddressSameAsPermanent() != null ?
-                                        createcandidateRequest.getIsPresentAddressSameAsPermanent() : true))
+                        //.contactList(processContact(createcandidateRequest.getContact(), partitionKey))
+                        //.isPresentSameAsPermanentAddress(createcandidateRequest.getIsPresentAddressSameAsPermanent())
+                        //.addressList(ProcessCandidateAddress(createcandidateRequest.getAddressList(), partitionKey))
                         .professionalExperience(createcandidateRequest.getProfessionalExperience())
                         .education(createcandidateRequest.getEducation())
                         .skillSet(createcandidateRequest.getSkillSet())
@@ -81,115 +76,57 @@ public class CreateCandidateActivity {
                         .eeoDetails_protectedClass(createcandidateRequest.getEeoDetails_protectedClass())
                         .isUnderProcess(createcandidateRequest.getIsUnderProcess())
                         .customCandidateFields(createcandidateRequest.getCustomCandidateFields())
+                        .comments(createcandidateRequest.getComments())
                         .build();
 
                 CandidateEntity createCandidateEntityObj = candidateDao.saveCandidateEntity(candidateEntity);
-                return ApiResponse.builder()
-                        .status(201)
-                        .message("Candidate created successfully!")
-                        .data(createCandidateEntityObj)
-                        .build();
+                return ApiResponse.builder().status(201).message(CREATE_CANDIDATE_SUCCESS).data(createCandidateEntityObj).build();
 
             } catch (Exception e) {
                 e.printStackTrace();
-                return ApiResponse.builder()
-                        .status(500)
-                        .message("Something went wrong, try again!")
-                        .build();
+                return ApiResponse.builder().status(500).message(CREATE_CANDIDATE_ERROR).build();
             }
         } else {
-            return ApiResponse.builder()
-                    .status(400)
-                    .message("Invalid request data! Please check candidate data as it does not meet required fields for a candidate record")
-                    .errors(validateCreateCandidateRequest.getErrors())
-                    .build();
+            return ApiResponse.builder().status(HttpStatus.SC_FORBIDDEN).message(CREATE_CANDIDATE_VALIDATION_ERROR).errors(validateCreateCandidateRequest.getErrors()).build();
         }
     }
 
-    private List<String> ProcessCandidateAddress(List<Address> addressList, Boolean isPresentSameAsPermanent) {
+    private List<String> ProcessCandidateAddress(List<Address> addressList, String orgId) {
         List<String> addressIdList = new ArrayList<>();
-        /*addressIdList.add(saveAddress(addr, isPresentSameAsPermanent ?
-                    ADDRESS_PRESENT : addr.getAddressType().toUpperCase(Locale.ROOT)));*/
-        if(isPresentSameAsPermanent) {
-            saveAddress(convertToAddressEntity(addressList.get(0)));
-        }
-        else {
-            for(Address addr : addressList) {
-                saveAddress(convertToAddressEntity(addr));
-            }
-        }
 
+        for (Address addr : addressList) {
+            addressIdList.add(saveAddress(addr, orgId));
+        }
         return addressIdList;
     }
 
-    private AddressEntity convertToAddressEntity(Address address) {
-        AddressEntity entity = AddressEntity.builder()
-                .Address(StringUtils.trim(address.getAddressLine1()) + " " + StringUtils.trim(address.getAddressLine2()))
-                .locationName(address.getCountry())
-                .AddressType(address.getAddressType())
-                .City(address.getCity())
-                .State(address.getState())
-                .Country(address.getCountry())
-                .ZipCode(address.getZipCode()).build();
-        return entity;
-    }
-
-    private String saveAddress(AddressEntity addressEntity) {
+    private String saveAddress(Address address, String orgId) {
+        String result = "";
         try {
-            JsonApiGatewayCaller caller = new JsonApiGatewayCaller(
-                    AWS_IAM_ACCESS_KEY,
-                    AWS_IAM_SECRET_ACCESS_KEY,
-                    null,
-                    AWS_REGION,
-                    new URI(AWS_API_GATEWAY_ENDPOINT_CONFIG_ADDRESS_CREATE)
-            );
-
-            ApiGatewayResponse response = caller.execute(HttpMethodName.POST,
-                    "/address",
-                    new ByteArrayInputStream(addressEntity.toString().getBytes()));
-
-            return response.toString();
-        }
-        catch(Exception ex) {
-            ex.printStackTrace();
+            result = candidateDao.createAddressToConfigServer(address, orgId);
+        } catch (Exception ex) {
             throw new AddressUploadException(ADDRESS_NOT_SAVED);
         }
+        return result;
     }
 
-
-    //TODO: Process contacts for the candidate by creating new contacts in contact config service
-    private List<String> processContact(List<Contact> contactList) {
+    private List<String> processContact(List<Contact> contactList, String orgId) {
         List<String> cIdList = new ArrayList<>();
-        for(Contact c : contactList) {
-            try {
-                cIdList.add(saveContact(c));
-            }
-            catch(Exception ex) {
+        for (Contact c : contactList) {
 
-            }
+            cIdList.add(saveContact(c, orgId));
+
         }
         return cIdList;
     }
 
-    private String saveContact(Contact contact) {
+    private String saveContact(Contact contact, String orgId) {
+        String result = "";
         try {
-            JsonApiGatewayCaller caller = new JsonApiGatewayCaller(
-                    AWS_IAM_ACCESS_KEY,
-                    AWS_IAM_SECRET_ACCESS_KEY,
-                    null,
-                    AWS_REGION,
-                    new URI(AWS_API_GATEWAY_ENDPOINT_CONFIG_CONTACT_CREATE)
-            );
-
-            ApiGatewayResponse response = caller.execute(HttpMethodName.POST,
-                    "/contact",
-                    new ByteArrayInputStream(contact.toString().getBytes()));
-
-            return response.toString();
+            result = candidateDao.createContactToConfigServer(contact, orgId);
+        } catch (Exception ex) {
+            throw new ContactUploadException(CONTACT_NOT_CREATED);
         }
-        catch(Exception ex) {
-            ex.printStackTrace();
-            throw new ContactUploadException(CONTACT_NOT_SAVED);
-        }
+        return result;
     }
 }
